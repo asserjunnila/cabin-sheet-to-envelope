@@ -83,12 +83,12 @@ def create_table(cabin_arr, styleSheet):
 
 def createPDF(CABINS_XLSX, OUTPUT_FILE):
 
-  try:  
-    with open('jokes.json') as json_file:
-      jokes = json.load(json_file)
-  except:
-    print("jokes.json not found and script aborted")
-    quit()
+  # try:  
+  #   with open('jokes.json') as json_file:
+  #     jokes = json.load(json_file)
+  # except:
+  #   print("jokes.json not found and script aborted")
+  #   quit()
 
   jokesStyle = ParagraphStyle('yourtitle',
                           fontName="Helvetica-Oblique",
@@ -157,7 +157,7 @@ def createPDF(CABINS_XLSX, OUTPUT_FILE):
     elements.append(Paragraph(" ",styleSheet["BodyText"]))
 
 
-    elements.append(Paragraph('"'+jokes[random.randrange(0,len(jokes))]+'"', jokesStyle))
+    elements.append(Paragraph('"'+notes['quote'][random.randrange(0,len(notes['quote']))]+'"', jokesStyle))
 
     elements.append(PageBreak())
 
