@@ -1,18 +1,18 @@
 # cabin-sheet-to-envelope
 
 ## Steps 
-1. Clone repo
-2. Install python and requirements.txt to your machine
+1. git clone <dethärrepo>
+2. Handle python, venv and requirements.txt to your machine
 3. Create config.json according the schema.json (see example below)
-4. Drop .jpeg and make sure that the picture size is relative to the resolution
-5. Make sure all the config.json fields are filled according to the need and the spreadsheets
-5. Create a folder for cleaner file management and drop all the .xlsx spreadsheets there
-6. `python to_envelope.py`
-7. Have a look at the results in *envelope_print/* folder and validate the results
-8. Enjoy and head for the harbour
+4. Drop the desired .jpeg to the root of this repo folder and make sure that the picture size is relative to the resolution
+5. Make sure all the config.json fields are filled according to the specs of the spreadsheets
+6. Create a folder where to drop all the .xlsx spreadsheets for cleaner file management
+7. `python(3) to_envelope.py`
+8. Have a look at the results in *envelope_print/* folder and validate the results
+9. Enjoy and head for the harbour
 
-## config.json
-Example config.json 
+## Example config.json
+ 
 ```
 {
   "spreadsheetconfig": {
