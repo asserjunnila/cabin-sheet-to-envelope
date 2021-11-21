@@ -1,7 +1,6 @@
 
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from abc import abstractmethod
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter, landscape, A5
 from reportlab.lib.units import inch, cm
@@ -13,14 +12,21 @@ from reportlab import *
 import openpyxl
 import os
 from datetime import datetime
+from time import sleep
 
 import random
 import json
 import jsonschema
 from jsonschema import validate
 
+step = 0
+total_steps = 0
+created_files_array = []
+read_files_array = []
+
 
 def parse_cabins(file_name, config):
+
     wb = openpyxl.load_workbook(file_name)
     sheet = wb.active
     cabins_arr = []
@@ -78,6 +84,7 @@ def parse_cabins(file_name, config):
 
 
 def create_table(cabin_arr, styleSheet):
+
     H0 = Paragraph('''<b>Hyttiluokka</b>''', styleSheet["BodyText"])
     H1 = Paragraph('''<b>Sukunimi</b>''', styleSheet["BodyText"])
     H2 = Paragraph('''<b>Etunimi</b>''', styleSheet["BodyText"])
@@ -113,6 +120,7 @@ def create_table(cabin_arr, styleSheet):
 
 
 def createPDF(CABINS_XLSX, OUTPUT_FILE, config):
+    step_indicator()
 
     quote_style = ParagraphStyle('yourtitle',
                                  fontName="Helvetica-Oblique",
@@ -123,13 +131,14 @@ def createPDF(CABINS_XLSX, OUTPUT_FILE, config):
                                  textColor="red")  # backColor = "rgb(239, 20, 36)",
 
     # Header image from the config.json
+
     I = Image(config['picture'])
     I.drawHeight = 5.48 * cm
     I.drawWidth = 17.5 * cm
 
     cabins = parse_cabins(CABINS_XLSX, config)
 
-    #doc = SimpleDocTemplate(OUTPUT_FILE, pagesize=landscape(A5), topMargin=1, bottomMargin=0)
+    # doc = SimpleDocTemplate(OUTPUT_FILE, pagesize=landscape(A5), topMargin=1, bottomMargin=0)
     doc = SimpleDocTemplate(OUTPUT_FILE, pagesize=landscape(
         A5), topMargin=1, bottomMargin=0)
     # container for the 'Flowable' objects
@@ -170,8 +179,14 @@ def createPDF(CABINS_XLSX, OUTPUT_FILE, config):
         elements.append(PageBreak())
 
     # write the document to disk
-    doc.build(elements)
-    print(f"{doc.filename}")
+
+    step_indicator()
+
+    try:
+        doc.build(elements)
+    except ValueError:
+        quit()
+    created_files_array.append(doc.filename)
 
 
 def validate_config(config):
@@ -188,6 +203,16 @@ def validate_config(config):
     except jsonschema.exceptions.ValidationError as err:
         return err
     return 1
+
+
+def step_indicator(decimals=1):
+    global step, total_steps
+    percent = ('{0:.' + str(decimals) + 'f}').format(100 *
+                                                     ((step+1)/float(total_steps)))
+    print(f'\rcreating files {percent}%', end='\r')
+    step = step+1
+    if step == total_steps:
+        print()
 
 
 def main():
@@ -208,15 +233,16 @@ def main():
         print("config.json not found and script aborted")
         quit()
 
-    print(f"\x1b[6;30;42mINPUT:\x1b[0m")
     # r=root, d=directories, f = files
     for r, d, f in os.walk(dirpath):
         for file in f:
-            if file.endswith('.xlsx') and '$' not in file and "lyyti" not in file.lower() and "muutokset" not in file.lower():
+            if file.endswith('.xlsx'):
                 files.append(os.path.join(r, file))
-                print(os.path.join(r, file))
+                read_files_array.append(os.path.join(r, file))
 
-    print(f"\n\x1b[6;30;42mOUTPUT:\x1b[0m")
+    # 2 indication steps per pdf file generation
+    global total_steps
+    total_steps = len(files)*2
 
     for xlsx in files:
         path = os.getcwd()
@@ -235,6 +261,13 @@ def main():
     end_time = datetime.now()
     duration = (end_time - start_time).total_seconds()
     print(f"\ntime elapsed: {duration} seconds")
+
+    print(f"\nfollowing files were read: \n")
+    for file in read_files_array:
+        print(file)
+    print(f"\nfollowing files were created: \n")
+    for file in created_files_array:
+        print(file)
 
 
 main()
