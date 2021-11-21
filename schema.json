@@ -1,0 +1,69 @@
+{
+  "title": "Configuration file",
+  "desciption": "A JSON for configuration properties for cabin to envelope script.",
+  "type": "object",
+  "properties": {
+    "spreadsheetconfig": {
+      "description": "Configuration for the spreadsheet; column definition and start row",
+      "type": "object",
+      "properties": {
+        "cabin_class_col": {
+          "description": "",
+          "type": "string"
+        },
+        "cabin_id_col": {
+          "description": "",
+          "type": "string"
+        },
+        "last_name_col": {
+          "description": "",
+          "type": "string"
+        },
+        "first_name_col": {
+          "description": "",
+          "type": "string"
+        },
+        "DIN1_col": {
+          "description": "",
+          "type": "string"
+        },
+        "DIN2_col": {
+          "description": "",
+          "type": "string"
+        },
+        "BRE_col": {
+          "description": "",
+          "type": "string"
+        },
+        "LUN_col": {
+          "description": "",
+          "type": "string"
+        },
+        "first_cabin_row": {
+          "description": "",
+          "type": "number"
+        }
+      }
+    },
+    "heading": {
+      "description": "The heading text for the envelope",
+      "type": "string"
+    },
+    "first": {
+      "description": "",
+      "type": "string"
+    },
+    "second": {
+      "description": "",
+      "type": "string"
+    },
+    "third": {
+      "description": "",
+      "type": "string"
+    },
+    "quote": {
+      "description": "",
+      "type": "array"
+    }
+  }
+}

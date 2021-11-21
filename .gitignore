@@ -132,5 +132,4 @@ envelope_print/
 */
 *.jpg
 
-notes.json
-jokes.json
+config.json
