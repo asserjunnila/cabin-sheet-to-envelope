@@ -16,9 +16,8 @@ import json
 
 
 def parse_cabins(file_name):
-  print(file_name)
+  print("INPUT \n" + file_name)
   wb = openpyxl.load_workbook(file_name)
-  #sheet = wb.get_sheet_by_name('hytit')
   sheet = wb.active
   cabins_arr = []
   cabin_arr = []
@@ -83,20 +82,14 @@ def create_table(cabin_arr, styleSheet):
 
 def createPDF(CABINS_XLSX, OUTPUT_FILE):
 
-  # try:  
-  #   with open('jokes.json') as json_file:
-  #     jokes = json.load(json_file)
-  # except:
-  #   print("jokes.json not found and script aborted")
-  #   quit()
-
-  jokesStyle = ParagraphStyle('yourtitle',
+  quote_style = ParagraphStyle('yourtitle',
                           fontName="Helvetica-Oblique",
                           fontSize=15,
                           parent=getSampleStyleSheet()['Heading2'],
                           alignment=1,
                           spaceAfter=14,
                           textColor="red")                            #backColor = "rgb(239, 20, 36)",
+
   # Header image
   # Picture name given as argument
   try:
@@ -106,7 +99,7 @@ def createPDF(CABINS_XLSX, OUTPUT_FILE):
     quit()
 
   I = Image(picture_file_name)
-  I.drawHeight = 6.5 * cm
+  I.drawHeight = 5.48 * cm
   I.drawWidth = 17.5 * cm
 
   cabins = parse_cabins(CABINS_XLSX)
@@ -127,40 +120,40 @@ def createPDF(CABINS_XLSX, OUTPUT_FILE):
     quit()
 
   for cabin in cabins:
+    # picture 
     elements.append(I)
+
+    # artificial padding for bottom with a text element
+    elements.append(Paragraph(" ",styleSheet["BodyText"]))
+
+    # table
     elements.append(create_table(cabin, styleSheet))
-    # elements.append(Paragraph("Rannekkeiden kontrolliosat toimivat Avajaisshow'ssa arpalippuina! Pääpalkintona "
-    #                         "arvonnassa on hulppea Suite-hytti! Katso ohjelmasta lisätiedot!", styleSheet[
-    #                             "Heading4"]))
+
+    # heading 
     elements.append(Paragraph(notes['heading'], styleSheet[
                                 "Heading4"]))
-    # elements.append(
-    #     Paragraph("Laivayhtiö veloittaa asiakkailta alkaen 100€ hyteistä, jotka on sotkettu tai joissa on tupakoitu.",
-    #             styleSheet["BodyText"]))
+    # first note
     elements.append(
         Paragraph(notes['first'],
                 styleSheet["BodyText"]))
 
-    # elements.append(Paragraph("Omien ja Tax Freesta ostettujen alkoholijuomien käyttö laivalla ehdottomasti kielletty.",
-    #                         styleSheet["BodyText"]))
+    # second note
     elements.append(Paragraph(notes['second'],
                             styleSheet["BodyText"]))
 
-    # elements.append(
-    #     Paragraph("Älä laita hyttikorttiasi puhelimen suojakoteloon, sillä kotelon magneetti vaurioittaa korttia!",
-    #             styleSheet["BodyText"]))
+    # third note
     elements.append(
         Paragraph(notes['third'],
                 styleSheet["BodyText"]))
 
+    # more artificial padding, TODO read documentation and improve layout to avoid these ugly hacks
     elements.append(Paragraph(" ",styleSheet["BodyText"]))
     elements.append(Paragraph(" ",styleSheet["BodyText"]))
 
-
-    elements.append(Paragraph('"'+notes['quote'][random.randrange(0,len(notes['quote']))]+'"', jokesStyle))
+    # random quote 
+    elements.append(Paragraph('"'+notes['quote'][random.randrange(0,len(notes['quote']))]+'"', quote_style))
 
     elements.append(PageBreak())
-
 
   # write the document to disk
   doc.build(elements)
@@ -168,7 +161,6 @@ def createPDF(CABINS_XLSX, OUTPUT_FILE):
 def main():
   dirpath = os.getcwd()
   files = []
-  #which files?
 
   # r=root, d=directories, f = files
   for r, d, f in os.walk(dirpath):
@@ -179,13 +171,14 @@ def main():
   for xlsx in files:
     path = os.getcwd()
     folder_name = "envelope_print"
-    #print("/" + folder_name + "/envelope_print_" + domain + "_" + xlsx.split('/')[-1].split('.')[0]+".pdf")
+
     try:
       os.mkdir(folder_name)
     except:
       pass
-      print("envelope_print folder already exists so let's use that one")
+      # print("envelope_print folder already exists so let's use that one")
 
     createPDF(xlsx, path + "/" + folder_name + "/" + "envelope_print_" + xlsx.split('/')[-1].split('.')[0]+".pdf")
+    print("OUTPUT: \n" + "/" + folder_name + "/envelope_print_" + xlsx.split('/')[-1].split('.')[0]+".pdf")
 
 main()
