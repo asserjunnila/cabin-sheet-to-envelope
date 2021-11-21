@@ -4,13 +4,17 @@
 1. Clone repo
 2. Install python and requirements to your machine
 3. Create config.json according the schema.json (see example below)
-4. Create a folder and drop all the .xlsx spreadsheets there
-5. `python to_envelope.py`
-6. Have a look at the results in *envelope_print/* folder and validate the results
+4. Drop .jpeg and make sure that the picture size is relative to the resolution
+5. Make sure all the config.json fields are filled according to the need and the spreadsheets
+5. Create a folder for cleaner file management and drop all the .xlsx spreadsheets there
+6. `python to_envelope.py`
+7. Have a look at the results in *envelope_print/* folder and validate the results
+8. Enjoy and head for the harbour
 
 ## config.json
 Example config.json 
-```{
+```
+{
   "spreadsheetconfig": {
     "cabin_class_col": "A",
     "cabin_id_col": "B",
@@ -68,4 +72,4 @@ Example config.json
 ```
 
 ## TODO
-1. Python requirements.txt and venv
+1. Python requirements.txt and venv management
