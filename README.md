@@ -2,7 +2,7 @@
 
 ## Steps 
 1. Clone repo
-2. Install python and requirements to your machine
+2. Install python and requirements.txt to your machine
 3. Create config.json according the schema.json (see example below)
 4. Drop .jpeg and make sure that the picture size is relative to the resolution
 5. Make sure all the config.json fields are filled according to the need and the spreadsheets
@@ -70,6 +70,3 @@ Example config.json
   ]
 }
 ```
-
-## TODO
-1. Python requirements.txt and venv management
