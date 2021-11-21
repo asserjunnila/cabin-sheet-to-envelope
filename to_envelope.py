@@ -8,9 +8,10 @@ from reportlab.platypus import Image, Paragraph, SimpleDocTemplate, Table
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.platypus import PageBreak
 from reportlab import *
+
 import openpyxl
 import os
-import sys
+
 import random
 import json
 import jsonschema
@@ -52,7 +53,6 @@ def parse_cabins(file_name, config):
   # from what row to start the cabins
   first_cabin_row = config['spreadsheetconfig']['first_cabin_row']
 
-
   for row in range(first_cabin_row, sheet.max_row + 1):
     # if row is empty, then skip to next row
     if sheet[cabin_class_col+str(row)].value is None and sheet[cabin_id_col+str(row)].value is None and sheet[last_name_col+str(row)].value is None:
@@ -73,7 +73,6 @@ def parse_cabins(file_name, config):
         sheet[DIN1_col + str(row)].value, sheet[DIN2_col + str(row)].value, sheet[BRE_col + str(row)].value, sheet[LUN_col + str(row)].value])
         cabins_arr.append(cabin_arr)
   return cabins_arr
-
 
 def create_table(cabin_arr, styleSheet):
   H0 = Paragraph('''<b>Hyttiluokka</b>''', styleSheet["BodyText"])
@@ -113,17 +112,10 @@ def createPDF(CABINS_XLSX, OUTPUT_FILE, config):
                           parent=getSampleStyleSheet()['Heading2'],
                           alignment=1,
                           spaceAfter=14,
-                          textColor="red")                            #backColor = "rgb(239, 20, 36)",
+                          textColor="red") #backColor = "rgb(239, 20, 36)",
 
-  # Header image
-  # Picture name given as argument
-  try:
-    picture_file_name = sys.argv[1]
-  except ValueError:
-    print("pls give picture file name as an argument and try again")
-    quit()
-
-  I = Image(picture_file_name)
+  # Header image from the config.json
+  I = Image(config['picture'])
   I.drawHeight = 5.48 * cm
   I.drawWidth = 17.5 * cm
 
@@ -182,8 +174,8 @@ def validate_config(config):
   try:
     validate(instance=config, schema=schema)
   except jsonschema.exceptions.ValidationError as err:
-    return False
-  return True
+    return err
+  return 1
 
 
 def main():
@@ -193,8 +185,9 @@ def main():
   try:  
     with open('config.json') as json_file:
       config = json.load(json_file)
-      if validate_config(config) is False:
-        print("config file invalid, quitting")
+      if validate_config(config) != 1:
+        print("config file invalid:")
+        print(validate_config(config))
         quit()
   except ValueError:
     print("config.json not found and script aborted")

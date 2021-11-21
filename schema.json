@@ -1,4 +1,5 @@
 {
+  "$schema": "http://json-schema.org/draft-04/schema#",
   "title": "Configuration file",
   "desciption": "A JSON for configuration properties for cabin to envelope script.",
   "type": "object",
@@ -9,41 +10,61 @@
       "properties": {
         "cabin_class_col": {
           "description": "",
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1
         },
         "cabin_id_col": {
           "description": "",
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1
         },
         "last_name_col": {
           "description": "",
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1
         },
         "first_name_col": {
           "description": "",
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1
         },
         "DIN1_col": {
           "description": "",
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1
         },
         "DIN2_col": {
           "description": "",
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1
         },
         "BRE_col": {
           "description": "",
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1
         },
         "LUN_col": {
           "description": "",
-          "type": "string"
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1
         },
         "first_cabin_row": {
           "description": "",
-          "type": "number"
+          "type": "integer"
         }
       }
+    },
+    "picture": {
+      "description": "The name of the picture in this folder",
+      "type": "string"
     },
     "heading": {
       "description": "The heading text for the envelope",
@@ -62,7 +83,7 @@
       "type": "string"
     },
     "quote": {
-      "description": "",
+      "description": "An array of the best quotes from this universe that are related to cruises. Prefer less than 46 characters.",
       "type": "array"
     }
   }
