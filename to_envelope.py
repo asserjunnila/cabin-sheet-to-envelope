@@ -132,14 +132,14 @@ def createPDF(CABINS_XLSX, OUTPUT_FILE, config):
     # Header image from the config.json
 
     I = Image(config['picture'])
-    I.drawHeight = 5.48 * cm
-    I.drawWidth = 17.5 * cm
+    I.drawHeight = config['picture_height_on_envelope'] * cm
+    I.drawWidth = config['picture_width_on_envelope'] * cm
 
     cabins = parse_cabins(CABINS_XLSX, config)
 
-    # doc = SimpleDocTemplate(OUTPUT_FILE, pagesize=landscape(A5), topMargin=1, bottomMargin=0)
     doc = SimpleDocTemplate(OUTPUT_FILE, pagesize=landscape(
         A5), topMargin=1, bottomMargin=0)
+
     # container for the 'Flowable' objects
     elements = []
 

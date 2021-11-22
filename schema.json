@@ -66,6 +66,14 @@
       "description": "The name of the picture in this folder",
       "type": "string"
     },
+    "picture_height_on_envelope": {
+      "description": "The height of the picture on the envelope. Prefer max 5.5",
+      "type": "number"
+    },
+    "picture_width_on_envelope": {
+      "description": "The width of the picture on the envelope. Keep it relative to the .jpegs resolution and the cofigured picture height",
+      "type": "number"
+    },
     "heading": {
       "description": "The heading text for the envelope",
       "type": "string"

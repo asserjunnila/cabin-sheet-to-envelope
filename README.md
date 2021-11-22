@@ -19,7 +19,7 @@ deactivate
 ```
 
 3. create config.json according the schema.json (see example below)
-4. drop the desired .jpeg to the root of this repo folder and make sure that the picture size is relative to the resolution
+4. drop the desired .jpeg to the root of this repo folder and make sure that the picture size on the envelope is relative to the resolution
 5. make sure all the config.json fields are filled according to the specs of the spreadsheets
 6. create a folder where to drop all the .xlsx spreadsheets for cleaner file management
 7. run
@@ -46,6 +46,8 @@ python to_envelope.py
     "first_cabin_row": 3
   },
   "picture": "JR21_kirjekuoriin.jpg",
+  "picture_height_on_envelope": 5.48,
+  "picture_width_on_envelope": 17.5,
   "heading": "Rannekkeiden kontrolliosat toimivat Avajaisshow'ssa arpalippuina! Pääpalkintona arvonnassa on hulppea Suite-hytti! Katso ohjelmasta lisätiedot!",
   "first": "Laivayhtiö veloittaa asiakkailta alkaen 100€ hyteistä, jotka on sotkettu tai joissa on tupakoitu.",
   "second": "Omien ja Tax Freesta ostettujen alkoholijuomien käyttö laivalla ehdottomasti kielletty.",
