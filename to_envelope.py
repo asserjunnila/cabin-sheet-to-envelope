@@ -22,7 +22,6 @@ from jsonschema import validate
 step = 0
 total_steps = 0
 created_files_array = []
-read_files_array = []
 
 
 def parse_cabins(file_name, config):
@@ -179,14 +178,12 @@ def createPDF(CABINS_XLSX, OUTPUT_FILE, config):
         elements.append(PageBreak())
 
     # write the document to disk
-
-    step_indicator()
-
     try:
         doc.build(elements)
     except ValueError:
         quit()
     created_files_array.append(doc.filename)
+    step_indicator()
 
 
 def validate_config(config):
@@ -238,7 +235,6 @@ def main():
         for file in f:
             if file.endswith('.xlsx'):
                 files.append(os.path.join(r, file))
-                read_files_array.append(os.path.join(r, file))
 
     # 2 indication steps per pdf file generation
     global total_steps
@@ -263,7 +259,7 @@ def main():
     print(f"\ntime elapsed: {duration} seconds")
 
     print(f"\nfollowing files were read: \n")
-    for file in read_files_array:
+    for file in files:
         print(file)
     print(f"\nfollowing files were created: \n")
     for file in created_files_array:
