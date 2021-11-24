@@ -220,7 +220,7 @@ def main():
     files = []
 
     try:
-        with open('config.json') as json_file:
+        with open('config.json', encoding="utf-8") as json_file:
             config = json.load(json_file)
             if validate_config(config) != 1:
                 print("config file invalid:")
@@ -234,7 +234,7 @@ def main():
     for r, d, f in os.walk(dirpath):
         for file in f:
             if file.endswith('.xlsx'):
-                files.append(os.path.join(r, file))
+                files.append(file)
 
     # 2 indication steps per pdf file generation
     global total_steps
@@ -242,6 +242,7 @@ def main():
 
     for xlsx in files:
         path = os.getcwd()
+        #path = path.replace("\\", "/")
         folder_name = "envelope_print"
 
         try:
@@ -250,9 +251,9 @@ def main():
             pass
             # print("envelope_print folder already exists so let's use that one")
 
-        creation_timestamp = datetime.now().strftime("%d.%m.%Y-%H:%M:%S")
+        creation_timestamp = datetime.now().strftime("%d.%m.%Y-%H.%M.%S")
         createPDF(
-            xlsx, f"{path}/{folder_name}/{folder_name}_{xlsx.split('/')[-1].split('.')[0]}_{creation_timestamp}.pdf", config)
+            f"{path}\\excel\\{xlsx}", f"{path}\\{folder_name}\\{folder_name}_{xlsx.split('/')[-1].split('.')[0]}_{creation_timestamp}.pdf", config)
 
     end_time = datetime.now()
     duration = (end_time - start_time).total_seconds()
