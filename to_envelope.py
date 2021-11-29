@@ -19,6 +19,8 @@ import json
 import jsonschema
 from jsonschema import validate
 
+import platform
+
 step = 0
 total_steps = 0
 created_files_array = []
@@ -125,7 +127,7 @@ def create_table(cabin_arr, styleSheet):
 
 
 def createPDF(CABINS_XLSX, OUTPUT_FILE, config):
-    # step_indicator()
+    step_indicator()
 
     quote_style = ParagraphStyle('yourtitle',
                                  fontName="Helvetica-Oblique",
@@ -188,7 +190,7 @@ def createPDF(CABINS_XLSX, OUTPUT_FILE, config):
     except ValueError:
         quit()
     created_files_array.append(doc.filename)
-    # step_indicator()
+    step_indicator()
 
 
 def validate_config(config):
@@ -245,6 +247,8 @@ def main():
     global total_steps
     total_steps = len(files)*2
 
+    platform_name = platform.system()
+
     for xlsx in files:
         path = os.getcwd()
         folder_name = "envelope_print"
@@ -256,9 +260,15 @@ def main():
             # print("envelope_print folder already exists so let's use that one")
 
         creation_timestamp = datetime.now().strftime("%d%m%Y-%H%M%S")
-        createPDF(
-            xlsx, f"{path}/{folder_name}/{folder_name}_{xlsx.split('/')[-1].split('.')[0]}_{creation_timestamp}.pdf", config)
-
+        if platform_name == "Linux":
+            createPDF(
+                xlsx, f"{path}/{folder_name}/{folder_name}_{xlsx.split('/')[-1].split('.')[0]}_{creation_timestamp}.pdf", config)
+        elif platform_name == "Windows":
+            createPDF(
+                f"{path}\\excel\\{xlsx}", f"{path}\\{folder_name}\\{folder_name}_{xlsx.split('/')[-1].split('.')[0]}_{creation_timestamp}.pdf", config)
+        else:
+            print("use linux or windows")
+            quit()
     end_time = datetime.now()
     duration = (end_time - start_time).total_seconds()
     print(f"\ntime elapsed: {duration} seconds")
