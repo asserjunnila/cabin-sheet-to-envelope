@@ -128,7 +128,7 @@ def create_table(cabin_arr, styleSheet):
 
 
 def createPDF(CABINS_XLSX, OUTPUT_FILE, config):
-    # step_indicator()
+    step_indicator()
 
     quote_style = ParagraphStyle('yourtitle',
                                  fontName="Helvetica-Oblique",
@@ -191,7 +191,7 @@ def createPDF(CABINS_XLSX, OUTPUT_FILE, config):
     except ValueError:
         quit()
     created_files_array.append(doc.filename)
-    # step_indicator()
+    step_indicator()
 
 
 def validate_config(config):
