@@ -26,12 +26,6 @@ created_files_array = []
 
 def parse_cabins(file_name, config):
 
-    wb = openpyxl.load_workbook(file_name)
-    sheet = wb.active
-    cabins_arr = []
-    cabin_arr = []
-    current = sheet['B3'].value
-
     # column A = hyttiluokka
     cabin_class_col = config['spreadsheetconfig']['cabin_class_col']
 
@@ -59,6 +53,12 @@ def parse_cabins(file_name, config):
     # from what row to start the cabins
     first_cabin_row = config['spreadsheetconfig']['first_cabin_row']
 
+    wb = openpyxl.load_workbook(file_name)
+    sheet = wb.active
+    cabins_arr = []
+    cabin_arr = []
+    current = sheet[cabin_id_col+str(first_cabin_row)].value
+
     # loop throught the spreadsheet
     for row in range(first_cabin_row, sheet.max_row):
         cabin = [sheet[cabin_class_col + str(row)].value, sheet[last_name_col + str(row)].value, sheet[first_name_col + str(row)].value,
@@ -79,7 +79,8 @@ def parse_cabins(file_name, config):
 
         # otherwise the next row is from another cabin -> add the existing cabin to the list of cabins and start a new one on row 84
         else:
-            if(sheet[cabin_id_col + str(row)].value is not None):
+            # but only if the cabin id is found and there is a person on the row
+            if(sheet[cabin_id_col + str(row)].value is not None and sheet[last_name_col + str(row)].value is not None):
                 cabins_arr.append(cabin_arr)
                 current = sheet[cabin_id_col + str(row)].value
                 cabin_arr = [cabin]
