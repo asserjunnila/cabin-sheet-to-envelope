@@ -19,18 +19,14 @@ import json
 import jsonschema
 from jsonschema import validate
 
+import platform
+
 step = 0
 total_steps = 0
 created_files_array = []
 
 
 def parse_cabins(file_name, config):
-
-    wb = openpyxl.load_workbook(file_name)
-    sheet = wb.active
-    cabins_arr = []
-    cabin_arr = []
-    current = sheet['B3'].value
 
     # column A = hyttiluokka
     cabin_class_col = config['spreadsheetconfig']['cabin_class_col']
@@ -59,26 +55,38 @@ def parse_cabins(file_name, config):
     # from what row to start the cabins
     first_cabin_row = config['spreadsheetconfig']['first_cabin_row']
 
-    for row in range(first_cabin_row, sheet.max_row + 1):
+    wb = openpyxl.load_workbook(file_name)
+    sheet = wb.active
+    cabins_arr = []
+    cabin_arr = []
+    current = sheet[cabin_id_col+str(first_cabin_row)].value
+
+    # loop throught the spreadsheet
+    for row in range(first_cabin_row, sheet.max_row):
+        cabin = [sheet[cabin_class_col + str(row)].value, sheet[last_name_col + str(row)].value, sheet[first_name_col + str(row)].value,
+                 sheet[DIN1_col + str(row)].value, sheet[DIN2_col + str(row)].value, sheet[BRE_col + str(row)].value, sheet[LUN_col + str(row)].value]
+
+        # if reached to the end, form the cabins and end
+        if (row == sheet.max_row-1):
+            cabins_arr.append(cabin_arr)
+            break
+
         # if row is empty, then skip to next row
         if sheet[cabin_class_col+str(row)].value is None and sheet[cabin_id_col+str(row)].value is None and sheet[last_name_col+str(row)].value is None:
             continue
-        # if cabin id is the current or there isnt a cabin id -> the same cabin as previous row and add it to the array of this particular cabin
-        if sheet[cabin_id_col + str(row)].value == current or sheet[cabin_id_col + str(row)].value is None:
-            cabin_arr.append([sheet[cabin_class_col + str(row)].value, sheet[last_name_col + str(row)].value, sheet[first_name_col + str(row)].value,
-                              sheet[DIN1_col + str(row)].value, sheet[DIN2_col + str(row)].value, sheet[BRE_col + str(row)].value, sheet[LUN_col + str(row)].value])
-        # otherwise the next row is from another cabin -> add the existing cabin to the list of cabins
+
+        # if cabin id is the current -> the same cabin as previous row and add it to the array of this particular cabin and carry on
+        if (sheet[cabin_id_col + str(row)].value == current):
+            cabin_arr.append(cabin)
+
+        # otherwise the next row is from another cabin -> add the existing cabin to the list of cabins and start a new one on row 84
         else:
-            cabins_arr.append(cabin_arr)
-            current = sheet[cabin_id_col + str(row)].value
-            cabin_arr = [[sheet[cabin_class_col + str(row)].value, sheet[last_name_col + str(row)].value, sheet[first_name_col + str(row)].value,
-                          sheet[DIN1_col + str(row)].value, sheet[DIN2_col +
-                                                                  str(row)].value, sheet[BRE_col + str(row)].value,
-                          sheet[LUN_col + str(row)].value]]
-            if row == sheet.max_row:
-                cabin_arr.append([sheet[cabin_class_col + str(row)].value, sheet[last_name_col + str(row)].value, sheet[first_name_col + str(row)].value,
-                                  sheet[DIN1_col + str(row)].value, sheet[DIN2_col + str(row)].value, sheet[BRE_col + str(row)].value, sheet[LUN_col + str(row)].value])
+            # but only if the cabin id is found and there is a person on the row
+            if(sheet[cabin_id_col + str(row)].value is not None and sheet[last_name_col + str(row)].value is not None):
                 cabins_arr.append(cabin_arr)
+                current = sheet[cabin_id_col + str(row)].value
+                cabin_arr = [cabin]
+
     return cabins_arr
 
 
@@ -145,7 +153,6 @@ def createPDF(CABINS_XLSX, OUTPUT_FILE, config):
 
     styleSheet = getSampleStyleSheet()
     # Add all elements to doc
-
     for cabin in cabins:
         # picture
         elements.append(I)
@@ -240,6 +247,8 @@ def main():
     global total_steps
     total_steps = len(files)*2
 
+    platform_name = platform.system()
+
     for xlsx in files:
         path = os.getcwd()
         folder_name = "envelope_print"
@@ -250,10 +259,16 @@ def main():
             pass
             # print("envelope_print folder already exists so let's use that one")
 
-        creation_timestamp = datetime.now().strftime("%d.%m.%Y-%H:%M:%S")
-        createPDF(
-            xlsx, f"{path}/{folder_name}/{folder_name}_{xlsx.split('/')[-1].split('.')[0]}_{creation_timestamp}.pdf", config)
-
+        creation_timestamp = datetime.now().strftime("%d%m%Y-%H%M%S")
+        if platform_name == "Linux":
+            createPDF(
+                xlsx, f"{path}/{folder_name}/{folder_name}_{xlsx.split('/')[-1].split('.')[0]}_{creation_timestamp}.pdf", config)
+        elif platform_name == "Windows":
+            createPDF(
+                f"{path}\\excel\\{xlsx}", f"{path}\\{folder_name}\\{folder_name}_{xlsx.split('/')[-1].split('.')[0]}_{creation_timestamp}.pdf", config)
+        else:
+            print("use linux or windows")
+            quit()
     end_time = datetime.now()
     duration = (end_time - start_time).total_seconds()
     print(f"\ntime elapsed: {duration} seconds")
