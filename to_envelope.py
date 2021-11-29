@@ -1,7 +1,6 @@
 
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from re import match
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter, landscape, A5
 from reportlab.lib.units import inch, cm
